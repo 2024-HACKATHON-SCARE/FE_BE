@@ -139,6 +139,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+
+# 가상환경명
 myvenv
 
 # Spyder project settings
