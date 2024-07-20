@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>로고</h1>
+    <form method="post" action="{% url 'accounts:signup' %}">
+        {% csrf_token %}
+        아이디: {{ form.username }}<br>
+        이메일: {{ form.email }}<br>
+        {{ form.password1.label_tag }} {{ form.password1 }}<br>
+        {{ form.password2.label_tag }} {{ form.password2 }}<br>
+        {% for choice in form.role %}
+            <div>
+                {{ choice.tag }}
+                <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+            </div>
+        {% endfor %}<br>
+        <button type="submit">회원가입</button>
+    </form>
+</body>
+</html>
