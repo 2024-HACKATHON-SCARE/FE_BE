@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-  </head>
-  <body>
-    <h2>로그인</h2>
+</head>
+<body>
+    <h1>로고</h1>
+
     <form method="post" action="{% url 'accounts:login' %}">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">로그인</button>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">로그인</button>
     </form>
-    <p>
-      <a href="{% url 'accounts:signup' %}">회원가입</a>
-    </p>
-  </body>
+    <br>
+    
+    - 계정이 없으신가요? -<br>
+    <a href="{% url 'accounts:signup' %}">계정 생성</a>
+    
+</body>
 </html>

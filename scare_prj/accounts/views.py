@@ -20,9 +20,8 @@ def signup_view(request):
     form = SignUpForm(request.POST)
 
     if form.is_valid():
-        user = form.save()
-        user.is_child = form.cleaned_data['is_child']
-        user.is_parent = form.cleaned_data['is_parent']
+        user = form.save(commit=False) # role 추가 변경 가능하도록
+        user.role = form.cleaned_data.get('role')
         user.save()
         return redirect('accounts:index')
     else:

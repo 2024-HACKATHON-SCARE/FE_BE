@@ -15,8 +15,7 @@ def upload_filepath(instance, filename):
 
 class User(AbstractUser):
     email = models.EmailField(max_length=30, unique=True, null=False, blank=False)
-    is_child = models.BooleanField(default=False, blank=False)
-    is_parent = models.BooleanField(default=False, blank=False)
+    role = models.CharField(max_length=10, choices=[('child', '자녀'), ('parent', '부모')], null=False, blank=False)
     #mypage_image = models.ImageField(upload_to=upload_filepath, blank=True, default='media/default_mypage_image.jpg')
     
     def __str__(self):

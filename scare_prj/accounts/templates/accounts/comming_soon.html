@@ -9,7 +9,7 @@
     <h1>Comming Soon</h1>
     username: {{ request.user.username }}<br>
     디자인: 
-    {% if request.user.is_child %}
+    {% if request.user.role == "child" %}
     자녀
     {% else %}
     부모
