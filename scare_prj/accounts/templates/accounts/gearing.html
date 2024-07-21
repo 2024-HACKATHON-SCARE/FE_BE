@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>연동하기</title>
+</head>
+<body>
+    <!-- 내게 온 신청 -->
+    <h2>내게 온 신청</h2>
+    {% if follow_requests %}
+        <ul>
+            {% for request in follow_requests %}
+                <li>
+                    {{ request.from_user.nickname }}
+                    <form action="{% url 'accounts:follow_accept' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="follow_request_id" value="{{ request.id }}">
+                        <button type="submit">수락</button>
+                    </form>
+                    <form action="{% url 'accounts:follow_reject' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="follow_request_id" value="{{ request.id }}">
+                        <button type="submit">거절</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>내게 온 연동 신청이 없습니다.</p>
+    {% endif %}
+    <br>
+    <hr>
+
+    <!-- 연동 계정 검색 -->
+    <h2>연동 계정 검색</h2>
+    <p>연동할 계정의 아이디를 작성해주세요.</p>
+    <form action="{% url 'accounts:gearing' id=request.user.id %}" method="get">
+        <input type="text" name="gear_id" placeholder="아이디 작성">
+        <button type="submit">검색</button>
+    </form>
+
+    {% if searched %}
+        <h3>검색 결과</h3>
+        {% if searched_user %}
+            <p>{{ searched_user.nickname }}</p>
+            <form action="{% url 'accounts:link_account' searched_user.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">신청</button>
+            </form>
+        {% else %}
+            <p>일치하는 계정이 없습니다.</p>
+        {% endif %}
+    {% endif %}
+    <br>
+    <hr>
+
+    <!-- 연동 계정 삭제 -->
+    <h2>연동 계정 삭제</h2>
+    {% if followers %}
+        <ul>
+            {% for follower in followers %}
+                <li>
+                    <p>{{ follower.nickname }}</p>
+                    <form action="{% url 'accounts:unfollow' follower.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">삭제</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>연동된 계정이 없습니다.</p>
+    {% endif %}
+</body>
+</html>

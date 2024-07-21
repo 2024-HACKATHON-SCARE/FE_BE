@@ -14,4 +14,9 @@ urlpatterns = [
     # 마이페이지
     path('mypage/', mypage, name="mypage"),
     path('myinfo_update/', myinfo_update, name="myinfo_update"),
+    path('gearing/<int:id>/', gearing, name='gearing'),
+    path('link-account/<int:user_id>/', link_account.as_view(), name='link_account'),
+    path('follow-accept/', follow_accept.as_view(), name='follow_accept'),
+    path('follow-reject/', follow_reject.as_view(), name='follow_reject'),
+    path('unfollow/<int:user_id>/', unfollow, name='unfollow'),
 ]
