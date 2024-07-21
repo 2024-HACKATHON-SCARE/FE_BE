@@ -12,8 +12,8 @@
     이메일 주소: {{ request.user.email }}<br>
     <hr>
     <a href="{% url 'accounts:myinfo_update' %}">내 정보 수정하기</a><br>
-    연동하기<br>
-    알람 설정<br>
+    <a href="{%url 'accounts:gearing' request.user.id %}">연동하기</a><br>
+    <a href="##">알람 설정</a><br>
     <a href="{% url 'accounts:logout' %}">로그아웃</a><br>
     <hr>
     광고<br>

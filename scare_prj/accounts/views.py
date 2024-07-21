@@ -4,6 +4,12 @@ from .models import *
 from django.contrib.auth.forms import AuthenticationForm # 로그인
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
+from django.http import HttpResponseForbidden, HttpResponse
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from .serializers import FollowSerializer
 
 # 임시페이지
 def comming_soon(request):
@@ -67,3 +73,104 @@ def myinfo_update(request):
         info.save()
         return redirect('accounts:mypage')
     return render(request, 'accounts/myinfo_update.html', {'info':info})
+
+
+@login_required
+def gearing(request, id):
+    user = get_object_or_404(User, id=id)
+    followers = user.followings.all()
+    follow_requests = user.received_follow_requests.filter(status='pending')
+
+    searched = False
+    searched_user = None
+
+    if 'gear_id' in request.GET:
+        searched = True
+        gear_id = request.GET.get('gear_id')
+        try:
+            searched_user = User.objects.get(username=gear_id)
+        except User.DoesNotExist:
+            searched_user = None
+
+    return render(request, 'accounts/gearing.html', {
+        'follow_requests': follow_requests,
+        'followers': followers,
+        'searched': searched,
+        'searched_user': searched_user
+    })
+
+
+# 계정 연동 신청
+class link_account(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, user_id):
+        from_user = request.user
+        to_user = get_object_or_404(User, id=user_id)
+        serializer = FollowSerializer(data={'from_user': from_user.pk, 'to_user': to_user.pk})
+        serializer.is_valid(raise_exception=True)
+        follow_request = serializer.save()
+        return Response({"message": "친구 신청을 보냈습니다."}, status=status.HTTP_201_CREATED)
+
+
+# 연동 신청 수락
+class follow_accept(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        follow_request_id = request.data.get('follow_request_id')
+        if not follow_request_id:
+            return Response({"message": "follow_request_id가 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        follow_request = get_object_or_404(Follow, id=follow_request_id)
+        
+        if follow_request.to_user != request.user:
+            return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+        if follow_request.status != 'pending':
+            return Response({"message": "이미 처리된 요청입니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        follow_request.status = 'accepted'
+        follow_request.save()
+
+        from_user = follow_request.from_user
+        to_user = follow_request.to_user
+
+        from_user.followings.add(to_user)
+        to_user.followings.add(from_user)
+
+
+        return Response({"message": "친구 신청을 수락했습니다."}, status=status.HTTP_200_OK)
+
+# 연동 신청 거절
+class follow_reject(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        follow_request_id = request.data.get('follow_request_id')
+        if not follow_request_id:
+            return Response({"message": "follow_request_id가 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        follow_request = get_object_or_404(Follow, id=follow_request_id)
+
+        if follow_request.to_user != request.user:
+            return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+        
+        if follow_request.status != 'pending':
+            return Response({"message": "이미 처리된 요청입니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        follow_request.status = 'rejected'
+        follow_request.save()
+
+        return Response({"message": "친구 신청을 거절했습니다."}, status=status.HTTP_200_OK)
+
+
+# 연동 삭제
+def unfollow(request, user_id):
+    current_user = request.user
+    user_to_unfollow = get_object_or_404(User, id=user_id)
+
+    if user_to_unfollow in current_user.followings.all():
+        current_user.followings.remove(user_to_unfollow)
+        return redirect('accounts:gearing', id=current_user.id)
+    else:
+        return Response({"message": "이미 처리된 요청입니다."}, status=status.HTTP_400_BAD_REQUEST)
