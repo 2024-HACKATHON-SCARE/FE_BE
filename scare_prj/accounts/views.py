@@ -218,7 +218,6 @@ def follow_reject(request):
 
     return HttpResponseForbidden()
 
-
 # 연동 삭제
 def unfollow(request, user_id):
     current_user = request.user
@@ -233,3 +232,8 @@ def unfollow(request, user_id):
             status=400,
             json_dumps_params={'ensure_ascii': False}
         )
+
+#알람
+@login_required
+def alarm(request):
+    return render(request, 'accounts/alarm.html')

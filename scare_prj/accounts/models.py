@@ -27,9 +27,6 @@ class User(AbstractUser):
     def __str__(self):
         return f'{self.username}'
 
-    
-
-
 @receiver(post_save, sender=User)
 def set_default_nickname(sender, instance, created, **kwargs):
     if created:

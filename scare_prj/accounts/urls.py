@@ -19,4 +19,5 @@ urlpatterns = [
     path('follow-accept/', follow_accept, name='follow_accept'),
     path('follow-reject/', follow_reject, name='follow_reject'),
     path('unfollow/<int:user_id>/', unfollow, name='unfollow'),
+    path('alarm/', alarm, name='alarm'),
 ]
