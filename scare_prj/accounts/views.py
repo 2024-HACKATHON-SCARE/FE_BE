@@ -4,12 +4,8 @@ from .models import *
 from django.contrib.auth.forms import AuthenticationForm # 로그인
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
-from django.http import HttpResponseForbidden, HttpResponse
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
-from .serializers import FollowSerializer
+from django.http import HttpResponseForbidden, HttpResponse, JsonResponse
+from django.urls import reverse
 
 # 임시페이지
 def comming_soon(request):
@@ -101,33 +97,68 @@ def gearing(request, id):
 
 
 # 계정 연동 신청
-class link_account(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, user_id):
+@login_required
+def link_account(request, user_id):
+    if request.method == 'POST':
         from_user = request.user
         to_user = get_object_or_404(User, id=user_id)
-        serializer = FollowSerializer(data={'from_user': from_user.pk, 'to_user': to_user.pk})
-        serializer.is_valid(raise_exception=True)
-        follow_request = serializer.save()
-        return Response({"message": "친구 신청을 보냈습니다."}, status=status.HTTP_201_CREATED)
+        
+        if from_user == to_user:
+            return JsonResponse(
+                {"message": "자신에게 친구 신청을 할 수 없습니다."},
+                status=400,
+                json_dumps_params={'ensure_ascii': False}
+            )
+
+        follow_request, created = Follow.objects.get_or_create(
+            from_user=from_user,
+            to_user=to_user,
+            status='pending'
+        )
+        
+        if created:
+            return JsonResponse(
+                {"message": "친구 신청을 보냈습니다.", "redirect_url": reverse('accounts:gearing', args=[from_user.id])},
+                status=201,
+                json_dumps_params={'ensure_ascii': False}
+            )
+        else:
+            return JsonResponse(
+                {"message": "이미 친구 신청을 보냈습니다."},
+                status=400,
+                json_dumps_params={'ensure_ascii': False}
+            )
+
+    return HttpResponseForbidden()
+
 
 
 # 연동 신청 수락
-class follow_accept(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        follow_request_id = request.data.get('follow_request_id')
+@login_required
+def follow_accept(request):
+    if request.method == 'POST':
+        follow_request_id = request.POST.get('follow_request_id')
         if not follow_request_id:
-            return Response({"message": "follow_request_id가 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(
+                {"message": "follow_request_id가 필요합니다."},
+                status=400,
+                json_dumps_params={'ensure_ascii': False}
+            )
 
         follow_request = get_object_or_404(Follow, id=follow_request_id)
         
         if follow_request.to_user != request.user:
-            return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+            return JsonResponse(
+                {"message": "권한이 없습니다."},
+                status=403,
+                json_dumps_params={'ensure_ascii': False}
+            )
         if follow_request.status != 'pending':
-            return Response({"message": "이미 처리된 요청입니다."}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(
+                {"message": "이미 처리된 요청입니다."},
+                status=400,
+                json_dumps_params={'ensure_ascii': False}
+            )
 
         follow_request.status = 'accepted'
         follow_request.save()
@@ -138,31 +169,54 @@ class follow_accept(APIView):
         from_user.followings.add(to_user)
         to_user.followings.add(from_user)
 
+        return JsonResponse(
+            {"message": "친구 신청을 수락했습니다.",
+            "redirect": reverse('accounts:gearing', kwargs={'id': request.user.id})},
+            status=200,
+            json_dumps_params={'ensure_ascii': False}
+        )
 
-        return Response({"message": "친구 신청을 수락했습니다."}, status=status.HTTP_200_OK)
+    return HttpResponseForbidden()
 
 # 연동 신청 거절
-class follow_reject(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request):
-        follow_request_id = request.data.get('follow_request_id')
+@login_required
+def follow_reject(request):
+    if request.method == 'POST':
+        follow_request_id = request.POST.get('follow_request_id')
         if not follow_request_id:
-            return Response({"message": "follow_request_id가 필요합니다."}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(
+                {"message": "follow_request_id가 필요합니다."},
+                status=400,
+                json_dumps_params={'ensure_ascii': False}
+            )
 
         follow_request = get_object_or_404(Follow, id=follow_request_id)
 
         if follow_request.to_user != request.user:
-            return Response({"message": "권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
+            return JsonResponse(
+                {"message": "권한이 없습니다."},
+                status=403,
+                json_dumps_params={'ensure_ascii': False}
+            )
         
         if follow_request.status != 'pending':
-            return Response({"message": "이미 처리된 요청입니다."}, status=status.HTTP_400_BAD_REQUEST)
+            return JsonResponse(
+                {"message": "이미 처리된 요청입니다."},
+                status=400,
+                json_dumps_params={'ensure_ascii': False}
+            )
 
         follow_request.status = 'rejected'
         follow_request.save()
 
-        return Response({"message": "친구 신청을 거절했습니다."}, status=status.HTTP_200_OK)
+        return JsonResponse(
+            {"message": "친구 신청을 거절했습니다.",
+            "redirect": reverse('accounts:gearing', kwargs={'id': request.user.id})},
+            status=200,
+            json_dumps_params={'ensure_ascii': False}
+        )
 
+    return HttpResponseForbidden()
 
 # 연동 삭제
 def unfollow(request, user_id):
@@ -173,4 +227,13 @@ def unfollow(request, user_id):
         current_user.followings.remove(user_to_unfollow)
         return redirect('accounts:gearing', id=current_user.id)
     else:
-        return Response({"message": "이미 처리된 요청입니다."}, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse(
+            {"message": "이미 처리된 요청입니다."},
+            status=400,
+            json_dumps_params={'ensure_ascii': False}
+        )
+
+#알람
+@login_required
+def alarm(request):
+    return render(request, 'accounts/alarm.html')

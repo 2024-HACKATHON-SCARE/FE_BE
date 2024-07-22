@@ -15,8 +15,9 @@ urlpatterns = [
     path('mypage/', mypage, name="mypage"),
     path('myinfo_update/', myinfo_update, name="myinfo_update"),
     path('gearing/<int:id>/', gearing, name='gearing'),
-    path('link-account/<int:user_id>/', link_account.as_view(), name='link_account'),
-    path('follow-accept/', follow_accept.as_view(), name='follow_accept'),
-    path('follow-reject/', follow_reject.as_view(), name='follow_reject'),
+    path('link-account/<int:user_id>/', link_account, name='link_account'),
+    path('follow-accept/', follow_accept, name='follow_accept'),
+    path('follow-reject/', follow_reject, name='follow_reject'),
     path('unfollow/<int:user_id>/', unfollow, name='unfollow'),
+    path('alarm/', alarm, name='alarm'),
 ]

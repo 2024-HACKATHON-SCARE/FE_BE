@@ -27,16 +27,13 @@ class User(AbstractUser):
     def __str__(self):
         return f'{self.username}'
 
-    
-
-
 @receiver(post_save, sender=User)
 def set_default_nickname(sender, instance, created, **kwargs):
     if created:
         instance.nickname = instance.username
         instance.save()
 
-#친구 신청 중간 테이블
+# 친구 신청 중간 테이블
 class Follow(models.Model):
     from_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_follow_requests")
     to_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_follow_requests')
@@ -44,3 +41,12 @@ class Follow(models.Model):
 
     def __str__(self):
         return f'{self.from_user} -> {self.to_user} ({self.status})'
+
+# mp3 관련
+class AudioFile(models.Model):
+    audio_title = models.CharField(max_length=100, null=True, blank=True)
+    audio_file = models.FileField(upload_to='audio_files/', null=True, blank=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return self.title
