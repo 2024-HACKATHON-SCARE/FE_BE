@@ -37,7 +37,7 @@ def login_view(request):
     form = AuthenticationForm(request, data = request.POST)
     if form.is_valid():
         login(request, form.user_cache)
-        return redirect('accounts:comming_soon')
+        return redirect('cal:home')
     return render(request, 'accounts/login.html', {'form' : form})
 
 # 로그아웃
