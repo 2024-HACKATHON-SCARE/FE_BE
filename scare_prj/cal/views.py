@@ -1,6 +1,10 @@
 from django.shortcuts import render
 from datetime import datetime, timedelta
 import calendar
+# test
+# from calendar import HTMLCalendar
+# 캘린더랑 데이트타임 필요
+
 
 def home(request):
     today = datetime.today()
@@ -46,3 +50,22 @@ def home(request):
     }
 
     return render(request, 'cal/home.html', context)
+
+
+# from .calendars import CustomHTMLCalendar  # 커스터마이즈된 달력 클래스를 import
+
+def home2(request, year, month):
+    cal = calendar.Calendar(firstweekday=6)
+    month_days = cal.monthdayscalendar(year, month)
+    
+    # 한국어 요일과 월을 설정
+    weekdays = ["월", "화", "수", "목", "금", "토", "일"]
+    
+    context = {
+        'year': year,
+        'month': month,
+        'cal_rows': month_days,
+        'weekdays': weekdays,
+    }
+    
+    return render(request, 'cal/home2.html', context)
