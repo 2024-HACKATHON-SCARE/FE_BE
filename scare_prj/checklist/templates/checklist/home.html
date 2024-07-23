@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>체크 리스트</title>
+<script>
+        function updateCompletion(todoId, completed) {
+            fetch(`/checklist/update/${todoId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    'completed': completed
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                // Optionally update the UI based on the response
+                document.querySelector(`#todo-${todoId} .status`).innerText = completed ? ' - 완료됨' : ' - 미완료';
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+        function navigateDate(offset) {
+            const currentDate = new Date('{{ current_date|date:"Y-m-d" }}');
+            currentDate.setDate(currentDate.getDate() + offset);
+            const formattedDate = currentDate.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
+            window.location.href = `?date=${formattedDate}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const userRole = '{{ user_role }}';
+            document.querySelectorAll('input[name="completeds"]').forEach(checkbox => {
+                if (userRole === 'child') {
+                    checkbox.disabled = true;  // 자녀 역할일 경우 체크박스를 비활성화합니다.
+                }
+                checkbox.addEventListener('change', function() {
+                    const todoId = this.dataset.todoId;
+                    const completed = this.checked;
+                    updateCompletion(todoId, completed);
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+        <!-- 날짜 이동 버튼 추가 -->
+    <button onclick="navigateDate(-1)">어제</button>
+    {{ current_date|date:"Y.m.d l" }}
+    <button onclick="navigateDate(1)">내일</button>
+
+    <ul>
+        {% for todo in todos %}
+            <li id="todo-{{ todo.id }}">
+                <b><a href="{%url 'checklist:detail' todo.id%}">{{todo.title }}</a></b>
+                <input type="checkbox" name="completeds" data-todo-id="{{ todo.id }}" {% if todo.completed %}checked{% endif %}>
+            </li>
+        {% empty %}
+            <li>할 일이 없습니다.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'checklist:create' %}">추가</a>
+</body>
+</html>
