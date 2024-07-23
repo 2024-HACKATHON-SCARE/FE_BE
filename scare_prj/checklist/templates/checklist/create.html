@@ -8,9 +8,9 @@
 <body>
     <h1>체크리스트 항목 추가</h1>
     <form method="post">
-        {%csrf_token%}
+        {% csrf_token %}
         {{ form.as_p }}
-        <button type = "submit">저장</button>
+        <button type="submit">저장</button>
     </form>
 </body>
 </html>

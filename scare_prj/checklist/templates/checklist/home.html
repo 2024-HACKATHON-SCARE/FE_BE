@@ -3,68 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token }}"> <!-- CSRF 토큰을 메타 태그로 추가 -->
     <title>체크 리스트</title>
-<script>
-        function updateCompletion(todoId, completed) {
-            fetch(`/checklist/update/${todoId}/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: JSON.stringify({
-                    'completed': completed
-                })
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Success:', data);
-                // Optionally update the UI based on the response
-                document.querySelector(`#todo-${todoId} .status`).innerText = completed ? ' - 완료됨' : ' - 미완료';
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-        function navigateDate(offset) {
-            const currentDate = new Date('{{ current_date|date:"Y-m-d" }}');
-            currentDate.setDate(currentDate.getDate() + offset);
-            const formattedDate = currentDate.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 변환
-            window.location.href = `?date=${formattedDate}`;
-        }
+            function navigateDate(offset) {
+                const currentDate = new Date('{{ current_date|date:"Y-m-d" }}');
+                currentDate.setDate(currentDate.getDate() + offset);
+                const formattedDate = currentDate.toISOString().split('T')[0];
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('date', formattedDate);
+                window.location.href = currentUrl.toString();
+            }
 
-        document.addEventListener('DOMContentLoaded', (event) => {
-            const userRole = '{{ user_role }}';
-            document.querySelectorAll('input[name="completeds"]').forEach(checkbox => {
-                if (userRole === 'child') {
-                    checkbox.disabled = true;  // 자녀 역할일 경우 체크박스를 비활성화합니다.
-                }
-                checkbox.addEventListener('change', function() {
-                    const todoId = this.dataset.todoId;
-                    const completed = this.checked;
-                    updateCompletion(todoId, completed);
+            document.querySelector('button[onclick="navigateDate(-1)"]').addEventListener('click', () => navigateDate(-1));
+            document.querySelector('button[onclick="navigateDate(1)"]').addEventListener('click', () => navigateDate(1));
+
+            document.querySelectorAll('input[name="completed"]').forEach((checkbox) => {
+                checkbox.addEventListener('change', (event) => {
+                    const todoId = event.target.dataset.todoId;
+                    const isCompleted = event.target.checked;
+                    toggleTodoCompletion(todoId, isCompleted);
                 });
             });
         });
+
+        function toggleTodoCompletion(todoId, isCompleted) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch(`/checklist/${todoId}/update_status/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ completed: isCompleted })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Status updated:', data);
+                } else {
+                    console.error('Failed to update status:', data.error || 'Unknown error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
     </script>
 </head>
 <body>
-        <!-- 날짜 이동 버튼 추가 -->
+    <!-- 날짜 이동 버튼 -->
     <button onclick="navigateDate(-1)">어제</button>
     {{ current_date|date:"Y.m.d l" }}
     <button onclick="navigateDate(1)">내일</button>
 
+    <!-- 체크리스트 항목 -->
     <ul>
         {% for todo in todos %}
             <li id="todo-{{ todo.id }}">
-                <b><a href="{%url 'checklist:detail' todo.id%}">{{todo.title }}</a></b>
-                <input type="checkbox" name="completeds" data-todo-id="{{ todo.id }}" {% if todo.completed %}checked{% endif %}>
+                <b><a href="{% url 'checklist:detail' todo.id %}">{{ todo.title }}</a></b>
+                <input type="checkbox" name="completed" data-todo-id="{{ todo.id }}" {% if todo.completed %}checked{% endif %}>
             </li>
         {% empty %}
             <li>할 일이 없습니다.</li>

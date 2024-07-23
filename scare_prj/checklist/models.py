@@ -16,6 +16,19 @@ class Day(models.Model):
     def __str__(self):
         return self.get_day_code_display()
 
+    @staticmethod
+    def get_day_index(day_code):
+        day_index_map = {
+            'MO': 0,
+            'TU': 1,
+            'WE': 2,
+            'TH': 3,
+            'FR': 4,
+            'SA': 5,
+            'SU': 6
+        }
+        return day_index_map.get(day_code, -1)
+
 class Todo(models.Model):
     title = models.CharField(max_length=30)
     due_date = models.DateField(null=True, blank=True)  # 수행해야하는 날짜
