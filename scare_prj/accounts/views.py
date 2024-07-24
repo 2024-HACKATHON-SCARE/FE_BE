@@ -25,7 +25,7 @@ def signup_view(request):
         user = form.save(commit=False) # role 추가 변경 가능하도록
         user.role = form.cleaned_data.get('role')
         user.save()
-        return redirect('accounts:index')
+        return redirect('accounts:login')
     else:
         return render(request, 'accounts/signup.html', {'form' : form})
 
@@ -37,7 +37,7 @@ def login_view(request):
     form = AuthenticationForm(request, data = request.POST)
     if form.is_valid():
         login(request, form.user_cache)
-        return redirect('accounts:comming_soon')
+        return redirect('cal:home')
     return render(request, 'accounts/login.html', {'form' : form})
 
 # 로그아웃
