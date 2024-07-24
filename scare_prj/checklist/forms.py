@@ -11,3 +11,9 @@ class TodoForm(forms.ModelForm):
             'due_date': forms.DateInput(attrs={'type': 'date'}),
             'due_time': forms.TimeInput(attrs={'type': 'time'}),
         }
+        labels = {
+            'title' : '제목',
+            'due_date': '날짜',
+            'due_time' : '시간',
+            'repeat_on' : '반복'
+        }

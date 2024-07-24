@@ -8,9 +8,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            const userRole = "{{ user_role }}"; // JavaScript 변수에 Django 템플릿 변수 할당
 
             function navigateDate(offset) {
-                const currentDate = new Date('{{ current_date|date:"Y-m-d" }}');
+                const currentDate = new Date("{{ current_date|date:'Y-m-d' }}");
                 currentDate.setDate(currentDate.getDate() + offset);
                 const formattedDate = currentDate.toISOString().split('T')[0];
                 const currentUrl = new URL(window.location.href);
@@ -18,16 +19,19 @@
                 window.location.href = currentUrl.toString();
             }
 
-            document.querySelector('button[onclick="navigateDate(-1)"]').addEventListener('click', () => navigateDate(-1));
-            document.querySelector('button[onclick="navigateDate(1)"]').addEventListener('click', () => navigateDate(1));
+            document.querySelector('button[data-action="navigate-date-previous"]').addEventListener('click', () => navigateDate(-1));
+            document.querySelector('button[data-action="navigate-date-next"]').addEventListener('click', () => navigateDate(1));
 
-            document.querySelectorAll('input[name="completed"]').forEach((checkbox) => {
-                checkbox.addEventListener('change', (event) => {
-                    const todoId = event.target.dataset.todoId;
-                    const isCompleted = event.target.checked;
-                    toggleTodoCompletion(todoId, isCompleted);
+            // 부모 계정일 경우에만 체크박스 이벤트 리스너 추가
+            if (userRole === 'parent') {
+                document.querySelectorAll('input[name="completed"]').forEach((checkbox) => {
+                    checkbox.addEventListener('change', (event) => {
+                        const todoId = event.target.dataset.todoId;
+                        const isCompleted = event.target.checked;
+                        toggleTodoCompletion(todoId, isCompleted);
+                    });
                 });
-            });
+            }
         });
 
         function toggleTodoCompletion(todoId, isCompleted) {
@@ -57,17 +61,18 @@
 </head>
 <body>
     <!-- 날짜 이동 버튼 -->
-    <button onclick="navigateDate(-1)">어제</button>
+    <button data-action="navigate-date-previous">어제</button>
     {{ current_date|date:"Y.m.d l" }}
-    <button onclick="navigateDate(1)">내일</button>
+    <button data-action="navigate-date-next">내일</button>
 
     <!-- 체크리스트 항목 -->
     <ul>
         {% for todo in todos %}
             <li id="todo-{{ todo.id }}">
                 <b><a href="{% url 'checklist:detail' todo.id %}">{{ todo.title }}</a></b>
-                <input type="checkbox" name="completed" data-todo-id="{{ todo.id }}" {% if todo.completed %}checked{% endif %}>
-            </li>
+                <input type="checkbox" name="completed" data-todo-id="{{ todo.id }}" {% if todo.completed %}checked{% endif %} {% if user_role == 'child' %}disabled{% endif %}>
+                <br>{{todo.due_time}}
+            </li><br>
         {% empty %}
             <li>할 일이 없습니다.</li>
         {% endfor %}

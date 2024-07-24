@@ -30,9 +30,10 @@ def checklist(request):
     todos = Todo.objects.filter(due_date=today, author_id__in=user_ids).distinct()
     return render(request, 'checklist/home.html', {'todos' : todos, 'current_date':today, 'user_role': user_role, 'completed_filter': completed})
 
+@login_required
 def update_status(request, todo_id):
-    if request.method == 'POST':
-        todo = get_object_or_404(Todo, id=todo_id, author=request.user)
+    if request.method == 'POST' and request.user.role == 'parent':
+        todo = get_object_or_404(Todo, id=todo_id)
         try:
             data = json.loads(request.body.decode('utf-8'))
             completed = data.get('completed', False)
@@ -42,6 +43,7 @@ def update_status(request, todo_id):
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'error': 'Invalid JSON'}, status=400)
     return JsonResponse({'success': False}, status=400)
+
 
 @login_required
 def create(request):
