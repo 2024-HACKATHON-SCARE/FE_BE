@@ -66,9 +66,9 @@ def home2(request, year, month, day):
         for j, day in enumerate(week):
             if day == 0:
                 if i == 0:  # 첫 번째 주
-                    month_days[i][j] = (prev_month_days - week.count(0) + 1, 'other-month')
+                    month_days[i][j] = (prev_month_days - week.count(0) + 1, 'prev-month')
                 elif i == len(month_days) - 1:  # 마지막 주
-                    month_days[i][j] = (box, 'other-month')
+                    month_days[i][j] = (box, 'next-month')
                     box += 1
             else:
                 month_days[i][j] = (day, 'current-month')

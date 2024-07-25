@@ -25,14 +25,25 @@
         </tr>
     </thead>
     <tbody>
+        
         {% for row in cal_rows %}
             <tr>
                 {% for day, cls in row %}
                     <td class="{{ cls }}">
-                        {% if cls == 'current-month' %}
-                            <a href="{% url 'cal:home2' year month day %}">{{ day }}</a>
+                        {% if cls == 'prev-month' %}
+                            {% if month == 1 %}
+                            <a href="{% url 'cal:home2' prev_year 12 day %}">{{ day }}</a>
+                            {% else %}
+                            <a href="{% url 'cal:home2' year prev_month day %}">{{ day }}</a>
+                            {% endif %}
+                        {% elif cls == 'next-month' %}
+                            {% if month == 12 %}
+                            <a href="{% url 'cal:home2' next_year 1 day %}">{{ day }}</a>
+                            {% else %}
+                            <a href="{% url 'cal:home2' year next_month day %}">{{ day }}</a>
+                            {% endif %}
                         {% else %}
-                            {{ day }}  <!-- 기본적으로 다른 상태의 날짜도 링크 없이 출력 -->
+                        <a href="{% url 'cal:home2' year month day %}">{{ day }}</a>
                         {% endif %}
                     </td>
                 {% endfor %}

@@ -12,34 +12,45 @@
         <a href="{% url 'cal:home_with_date' prev_year prev_month %}">&lt;</a>
         {{ year }}년 {{ month }}월
         <a href="{% url 'cal:home_with_date' next_year next_month %}">&gt;</a>
-    <table class="month">
-        <thead>
-            <tr>
-                <th>일</th>
-                <th>월</th>
-                <th>화</th>
-                <th>수</th>
-                <th>목</th>
-                <th>금</th>
-                <th>토</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in cal_rows %}
+        <table class="month">
+            <thead>
                 <tr>
-                    {% for day, cls in row %}
-                        <td class="{{ cls }}">
-                            {% if cls == 'current-month' %}
-                                <a href="{% url 'cal:home2' year month day %}">{{ day }}</a>
-                            {% else %}
-                                {{ day }}
-                            {% endif %}
-                        </td>
-                    {% endfor %}
+                    <th>일</th>
+                    <th>월</th>
+                    <th>화</th>
+                    <th>수</th>
+                    <th>목</th>
+                    <th>금</th>
+                    <th>토</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                
+                {% for row in cal_rows %}
+                    <tr>
+                        {% for day, cls in row %}
+                            <td class="{{ cls }}">
+                                {% if cls == 'prev-month' %}
+                                    {% if month == 1 %}
+                                    <a href="{% url 'cal:home2' prev_year 12 day %}">{{ day }}</a>
+                                    {% else %}
+                                    <a href="{% url 'cal:home2' year prev_month day %}">{{ day }}</a>
+                                    {% endif %}
+                                {% elif cls == 'next-month' %}
+                                    {% if month == 12 %}
+                                    <a href="{% url 'cal:home2' next_year 1 day %}">{{ day }}</a>
+                                    {% else %}
+                                    <a href="{% url 'cal:home2' year next_month day %}">{{ day }}</a>
+                                    {% endif %}
+                                {% else %}
+                                <a href="{% url 'cal:home2' year month day %}">{{ day }}</a>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
     <hr>
     <!-- nav bar -->
