@@ -28,7 +28,13 @@
             {% for row in cal_rows %}
                 <tr>
                     {% for day, cls in row %}
-                        <td class="{{ cls }}">{{ day }}</td>
+                        <td class="{{ cls }}">
+                            {% if cls == 'current-month' %}
+                                <a href="{% url 'cal:home2' year month day %}">{{ day }}</a>
+                            {% else %}
+                                {{ day }}
+                            {% endif %}
+                        </td>
                     {% endfor %}
                 </tr>
             {% endfor %}

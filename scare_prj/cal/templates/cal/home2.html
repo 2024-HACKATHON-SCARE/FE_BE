@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>로고</h1>
+    <hr>
+    <!-- 달력 -->
+    <a href="{% url 'cal:home_with_date' prev_year prev_month %}">&lt;</a>
+    {{ year }}년 {{ month }}월
+    <a href="{% url 'cal:home_with_date' next_year next_month %}">&gt;</a>
+<table class="month">
+    <thead>
+        <tr>
+            <th>일</th>
+            <th>월</th>
+            <th>화</th>
+            <th>수</th>
+            <th>목</th>
+            <th>금</th>
+            <th>토</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in cal_rows %}
+            <tr>
+                {% for day, cls in row %}
+                    <td class="{{ cls }}">
+                        {% if cls == 'current-month' %}
+                            <a href="{% url 'cal:home2' year month day %}">{{ day }}</a>
+                        {% else %}
+                            {{ day }}  <!-- 기본적으로 다른 상태의 날짜도 링크 없이 출력 -->
+                        {% endif %}
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<hr>
+{{ year }}년 {{ month }}월 {{ selected_day }}일 {{ selected_weekday }}요일
+
+<hr>
+<!-- nav bar -->
+<a href="{% url 'cal:home' %}">홈</a>
+</body>
+</html>
