@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'accounts',
     'cal',
     'checklist',
+    'record',
 ]
 
 MIDDLEWARE = [

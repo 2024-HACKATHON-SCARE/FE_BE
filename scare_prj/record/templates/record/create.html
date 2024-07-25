@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기록 작성</title>
+</head>
+<body>
+    <a href="{%url 'record:home'%}">뒤로 가기</a>
+    <h3>기록 생성</h3><hr>
+    <form action="{%url 'record:create'%}" method="POST" enctype="multipart/form-data">
+        {%csrf_token%}
+        <input type="text" placeholder="제목을 입력해주세요." name="title"><br>
+        <textarea placeholder="내용을 입력해주세요" name="content"></textarea><br>
+        <input type="file" name="image" value="이미지"><br>
+        <input type="submit" value="작성">
+    </form>
+
+
+</body>
+</html>
