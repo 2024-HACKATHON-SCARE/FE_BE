@@ -53,13 +53,34 @@ def home(request):
 
 
 # from .calendars import CustomHTMLCalendar  # 커스터마이즈된 달력 클래스를 import
+from datetime import date
 
 def home2(request, year, month):
     cal = calendar.Calendar(firstweekday=6)
-    month_days = cal.monthdayscalendar(year, month)
+    month_days = cal.monthdayscalendar(year, month) # 이번 달 날짜 주별로 리스트
     
+    # 이전 달의 년, 월을 계산
+    prev_year, prev_month = (year, month - 1) if month > 1 else (year - 1, 12)
+    prev_month_days = calendar.monthrange(prev_year, prev_month)[1] # 이전 달 날짜 수
+
+    # 다음 달의 년, 월을 계산
+    next_year, next_month = (year, month + 1) if month < 12 else (year + 1, 1)
+    
+    # 날짜 수정
+    for i, week in enumerate(month_days):
+        box = 1
+        for j, day in enumerate(week):
+            if day == 0:
+                if i == 0:  # 첫 번째 주
+                    month_days[i][j] = (prev_month_days - week.count(0) + 1, 'other-month')
+                elif i == len(month_days) - 1:  # 마지막 주
+                    month_days[i][j] = (box, 'other-month')
+                    box += 1
+            else:
+                month_days[i][j] = (day, 'current-month')
+
     # 한국어 요일과 월을 설정
-    weekdays = ["월", "화", "수", "목", "금", "토", "일"]
+    weekdays = ["일", "월", "화", "수", "목", "금", "토"]
     
     context = {
         'year': year,
