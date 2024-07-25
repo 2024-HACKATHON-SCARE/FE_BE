@@ -9,10 +9,12 @@
     <h1>로고</h1>
     <hr>
     <!-- 달력 -->
-    <h2 class="calendar_title">{{ year }}년 {{ month }}월 {{ today_day }}일</h2>
-    <table class="calendar">
+        <a href="{% url 'cal:home_with_date' prev_year prev_month %}">&lt;</a>
+        {{ year }}년 {{ month }}월
+        <a href="{% url 'cal:home_with_date' next_year next_month %}">&gt;</a>
+    <table class="month">
         <thead>
-            <tr class="calendar_header">
+            <tr>
                 <th>일</th>
                 <th>월</th>
                 <th>화</th>
@@ -23,16 +25,12 @@
             </tr>
         </thead>
         <tbody>
-            {% for week in cal_data %}
-            <tr>
-                {% for day, day_class in week %}
-                <td class="calendar_day {{ day_class }} {% if day == today_day and day_class == 'current-month' %}today{% endif %}">
-                    {% if day %}
-                    <div class="date">{{ day }}</div>
-                    {% endif %}
-                </td>
-                {% endfor %}
-            </tr>
+            {% for row in cal_rows %}
+                <tr>
+                    {% for day, cls in row %}
+                        <td class="{{ cls }}">{{ day }}</td>
+                    {% endfor %}
+                </tr>
             {% endfor %}
         </tbody>
     </table>
@@ -44,6 +42,5 @@
     기록
     <a href="{% url 'accounts:mypage' %}">마이페이지</a>
     <br>
-    <a href="{% url 'cal:home2' year month %}">홈2</a>
 </body>
 </html>

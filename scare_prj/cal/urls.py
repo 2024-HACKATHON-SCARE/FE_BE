@@ -5,5 +5,5 @@ app_name = 'cal'
 
 urlpatterns = [
     path('home/', home, name = "home"),
-    path('home2/<int:year>/<int:month>/', home2, name="home2"),
+    path('home/<int:year>/<int:month>/', home, name='home_with_date'),
 ]
