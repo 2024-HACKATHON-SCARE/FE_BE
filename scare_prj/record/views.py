@@ -7,7 +7,13 @@ import datetime
 
 @login_required
 def home(request):
-    records = Record.objects.filter(user=request.user).order_by('-created_at')
+    linked_users = request.user.followings.all()
+
+    # 현재 사용자와 연동된 사용자들의 ID를 리스트로 저장
+    user_ids = [request.user.id] + list(linked_users.values_list('id', flat=True))
+    
+    # 현재 사용자의 체크리스트와 연동된 사용자들의 체크리스트 가져오기
+    records = Record.objects.filter(user_id__in=user_ids).distinct()
     return render(request, 'record/home.html', {'records':records})
 
 @login_required
@@ -21,6 +27,7 @@ def create(request):
             title = title,
             content = content,
             image = image,
+            user = request.user
         )
         record.save()
 
