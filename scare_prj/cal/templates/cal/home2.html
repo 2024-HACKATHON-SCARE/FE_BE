@@ -87,10 +87,10 @@
     <hr>
     {{ selected_day }}일 {{ selected_weekday }}요일<br>
     
-    {% for schedule in schedules  %}
-    {{ schedule.title }}<br>
-    {{ schedule.time }}<br>
-    {{ schedule.related_words }}<br><br>
+    {% for schedule in schedules %}
+        <a href="{% url 'cal:update_schedule' schedule.id %}">{{ schedule.title }}</a><br>
+        {{ schedule.time }}<br>
+        {{ schedule.related_words }}<br><br>
     {% empty %}
     일정 없음<br><br>
     {% endfor %}
