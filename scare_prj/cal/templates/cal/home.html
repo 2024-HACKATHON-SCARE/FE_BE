@@ -8,6 +8,7 @@
 <body>
     <h1>로고</h1>
     <hr>
+    <a href="{%url 'checklist:notification'%}">알림</a>
     <!-- 달력 -->
     <h2 class="calendar_title">{{ year }}년 {{ month }}월 {{ today_day }}일</h2>
     <table class="calendar">
@@ -40,8 +41,8 @@
     <hr>
     <!-- nav bar -->
     <a href="{% url 'cal:home' %}">홈</a>
-    체크리스트
-    기록
+    <a href="{% url 'checklist:home' %}">체크리스트</a>
+    <a href ="{%url 'record:home'%}">기록</a>
     <a href="{% url 'accounts:mypage' %}">마이페이지</a>
     <br>
     <a href="{% url 'cal:home2' year month %}">홈2</a>
