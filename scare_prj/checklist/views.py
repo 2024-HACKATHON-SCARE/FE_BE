@@ -119,5 +119,12 @@ def update(request, todo_id):
 @login_required
 def delete(request, id):
     todo = get_object_or_404(Todo, id=id)
+
+    # 연결된 반복 항목 모두 삭제
+    repeat_todos = Todo.objects.filter(title=todo.title, author=todo.author, repeat_on__in=todo.repeat_on.all())
+
+    for repeat_todo in repeat_todos:
+        repeat_todo.delete()
+
     todo.delete()
     return redirect('checklist:home')

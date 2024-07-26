@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>기록 수정</title>
+</head>
+<body>
+    <a href="{%url 'record:home'%}">뒤로 가기</a>
+    <h3>기록 수정</h3><hr>
+    <form action="{%url 'record:update' record.id%}" method="POST" enctype="multipart/form-data">
+        {%csrf_token%}
+        <input type="text" name="title" value="{{record.title}}"><br>
+        <textarea name="content">{{record.content}}</textarea><br>
+        {%if record.image%}
+        <img src="{{record.image.url}}">
+        {%endif%}
+        <br>
+        <input type="file" name="image"><br>
+        <input type="submit" value="작성">
+    </form>
+</body>
+</html>
