@@ -89,7 +89,6 @@ def home2(request, year, month, day):
     일정 확인
     """
     selected_date = datetime(year = int(year), month = int(month), day = selected_day).date()
-    #print(datetime(year))
     schedules = Schedule.objects.filter(date=selected_date)
 
     context = {
@@ -137,6 +136,12 @@ def add_schedule(request, year, month, day):
         
         return redirect('cal:home2', year=year, month=month, day=day)
 
+    # 기존 일정의 관련 단어를 불러오기
+    existing_keywords = Schedule.objects.filter(author=request.user).values_list('related_words', flat=True)
+    unique_keywords = set()
+    for keywords in existing_keywords:
+        unique_keywords.update(keywords.split(','))
+
     # 시간과 분의 리스트를 생성하여 context에 추가
     hours = range(1, 13)  # 1부터 12까지
     minutes = range(0, 60)  # 0부터 59까지
@@ -148,6 +153,7 @@ def add_schedule(request, year, month, day):
         'title_choices': Schedule.TITLE_CHOICES,
         'hours': hours,
         'minutes': minutes,
+        'existing_keywords': unique_keywords,
     }
 
     return render(request, 'cal/add_schedule.html', context)

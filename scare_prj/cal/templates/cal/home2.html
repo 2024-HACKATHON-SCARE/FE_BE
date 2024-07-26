@@ -60,7 +60,7 @@
     {{ schedule.time }}<br>
     {{ schedule.related_words }}<br><br>
     {% empty %}
-    일정 없음
+    일정 없음<br><br>
     {% endfor %}
     <a href="{% url 'cal:add_schedule' year month selected_day %}">일정 추가</a> 
     <hr>

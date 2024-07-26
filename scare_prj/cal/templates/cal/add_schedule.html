@@ -28,11 +28,13 @@
         </select><br>
 
         관련 단어:<br>
-        {% for choice in title_choices %}
-            <input type="checkbox" name="related_words" value="{{ choice.0 }}">{{ choice.1 }}<br>
+        <!-- 기존 저장된 키워드 출력 -->
+        {% for keyword in existing_keywords %}
+        <input type="checkbox" name="related_words" value="{{ keyword }}">{{ keyword }}<br>
         {% endfor %}
-        관련 단어 추가:
-        <input type="text" name="additional_word"><br>
+
+<label>관련 단어 추가:</label>
+<input type="text" name="additional_word"><br>
 
         <input type="submit" value="추가하기">
     </form>
