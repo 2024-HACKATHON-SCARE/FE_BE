@@ -95,13 +95,14 @@ def home2(request, year, month, day):
     """
     일정 확인
     """
-    selected_date = datetime(year = int(year), month = int(month), day = selected_day).date()
-    schedules = Schedule.objects.filter(date=selected_date)
-
     # 달력에 연동된 일정 뜨도록
     linked_users = request.user.followings.all() # 연동된 사용자들
     # 현재 사용자와 연동된 사용자들의 ID를 리스트로 저장
     user_ids = [request.user.id] + list(linked_users.values_list('id', flat=True))
+
+    selected_date = datetime(year = int(year), month = int(month), day = selected_day).date()
+    schedules = Schedule.objects.filter(date=selected_date, author_id__in=user_ids).distinct()
+
     month_schedules = Schedule.objects.filter(author_id__in=user_ids).distinct()
 
     context = {
@@ -150,9 +151,14 @@ def add_schedule(request, year, month, day):
         
         return redirect('cal:home2', year=year, month=month, day=day)
 
+    # 달력에 연동된 일정 뜨도록
+    linked_users = request.user.followings.all() # 연동된 사용자들
+    # 현재 사용자와 연동된 사용자들의 ID를 리스트로 저장
+    user_ids = [request.user.id] + list(linked_users.values_list('id', flat=True))
+
     # 기존 일정의 관련 단어를 불러오기
-    existing_keywords = Schedule.objects.filter(author=request.user).values_list('related_words', flat=True)
-    unique_keywords = set()
+    existing_keywords = Schedule.objects.filter(author_id__in=user_ids).values_list('related_words', flat=True)
+    unique_keywords = {'진료', '처방', '입원'}
     for keywords in existing_keywords:
         unique_keywords.update(keywords.split(','))
 
