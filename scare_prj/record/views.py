@@ -7,7 +7,7 @@ import datetime
 
 @login_required
 def home(request):
-    records = Record.objects.all().order_by('-created_at')
+    records = Record.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'record/home.html', {'records':records})
 
 @login_required
