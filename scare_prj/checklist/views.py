@@ -39,6 +39,15 @@ def update_status(request, todo_id):
             completed = data.get('completed', False)
             todo.completed = completed
             todo.save()
+
+            # 연동된 사용자에게 알림 생성
+            linked_users = request.user.followings.all()
+            child_users = linked_users.filter(role='child')
+
+            if completed:
+                message = f"'{todo.title}'이 완료되었어요."
+                Notification.objects.create(user=todo.author, message=message)
+
             return JsonResponse({'success': True, 'completed': completed})
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'error': 'Invalid JSON'}, status=400)
@@ -128,3 +137,50 @@ def delete(request, id):
 
     todo.delete()
     return redirect('checklist:home')
+
+# 알림창
+@login_required
+def notification_list(request):
+    user = request.user
+    user_notifications = Notification.objects.filter(user=user)
+
+    linked_users = user.followings.all()
+    linked_users_notifications = Notification.objects.filter(user__in=linked_users)
+
+    notifications = user_notifications.union(linked_users_notifications).order_by('-created_at')
+    
+    new_notifications = []
+    past_notifications = []
+    current_date = timezone.now().date()
+
+    for notification in notifications:
+        days_since_created = (current_date - notification.created_at.date()).days
+
+        # 알림 데이터에 형식화된 날짜 추가
+        formatted_notification = {
+            'message': notification.message,
+            'created_at': notification.created_at,
+            'formatted_date': (notification.created_at.strftime('%Y.%m.%d') if days_since_created >= 3 else None),
+            'naturaltime_date': (None if days_since_created >= 3 else notification.created_at)
+        }
+
+        if notification.view_count == 0:
+            notification.view_count += 1
+            notification.is_read = True  
+            notification.save()
+            new_notifications.append(formatted_notification)
+        else:
+            past_notifications.append(formatted_notification)
+
+    return render(request, 'checklist/notifications.html', {
+        'new_notifications': new_notifications,
+        'past_notifications': past_notifications,
+    })
+
+# 읽음 처리
+@login_required
+def mark_as_read(request, notification_id):
+    notification = get_object_or_404(Notification, id=notification_id, user=request.user)
+    notifications.is_read = True
+    notification.save()
+    return redirect('checklist:notification')

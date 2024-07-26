@@ -3,6 +3,7 @@ from accounts.models import User
 import os
 from uuid import uuid4
 from django.utils import timezone
+from django.conf import settings
 
 # Create your models here.
 def upload_filepath(instance, filename):
@@ -15,6 +16,7 @@ class Record(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to=upload_filepath, blank = True, null = True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

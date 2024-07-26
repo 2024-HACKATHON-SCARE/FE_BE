@@ -10,4 +10,5 @@ urlpatterns = [
     path('detail/<int:id>/', detail, name= "detail"),
     path('update/<int:todo_id>/', update, name="update"),
     path('delete/<int:id>/', delete, name="delete"),
+    path('notification/', notification_list, name="notification")
 ]

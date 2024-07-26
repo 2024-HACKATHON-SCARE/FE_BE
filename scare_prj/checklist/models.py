@@ -40,3 +40,13 @@ class Todo(models.Model):
     
     def __str__(self):
         return f'{self.title} - {self.completed}'
+
+class Notification(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='notifications')
+    message = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    view_count = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.message
