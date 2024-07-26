@@ -30,6 +30,11 @@
         </select><br><br>
 
         관련 단어:<br>
+        <!-- 얠 누르면 추가가 됨
+        {% for choice in title_choices %}
+        <input type="checkbox" name="related_words" value="{{ choice.0 }}">{{ choice.1 }}<br>
+        {% endfor %}
+        -------------<br>-->
         <!-- 기존 저장된 키워드 출력 -->
         {% for keyword in existing_keywords %}
         <input type="checkbox" name="related_words" value="{{ keyword }}">{{ keyword }}<br>

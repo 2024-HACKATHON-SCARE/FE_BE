@@ -28,9 +28,9 @@ def home(request, year=None, month=None):
         for j, day in enumerate(week):
             if day == 0:
                 if i == 0:  # 첫 번째 주
-                    month_days[i][j] = (prev_month_days - week.count(0) + 1, 'other-month')
+                    month_days[i][j] = (prev_month_days - week.count(0) + 1, 'prev-month')
                 elif i == len(month_days) - 1:  # 마지막 주
-                    month_days[i][j] = (box, 'other-month')
+                    month_days[i][j] = (box, 'next-month')
                     box += 1
             else:
                 month_days[i][j] = (day, 'current-month')
@@ -38,7 +38,11 @@ def home(request, year=None, month=None):
     # 한국어 요일과 월을 설정
     weekdays = ["일", "월", "화", "수", "목", "금", "토"]
     
-    month_schedules = Schedule.objects.all()
+    # 달력에 연동된 일정 뜨도록
+    linked_users = request.user.followings.all() # 연동된 사용자들
+    # 현재 사용자와 연동된 사용자들의 ID를 리스트로 저장
+    user_ids = [request.user.id] + list(linked_users.values_list('id', flat=True))
+    month_schedules = Schedule.objects.filter(author_id__in=user_ids).distinct()
 
     context = {
         'year': year,
@@ -94,7 +98,11 @@ def home2(request, year, month, day):
     selected_date = datetime(year = int(year), month = int(month), day = selected_day).date()
     schedules = Schedule.objects.filter(date=selected_date)
 
-    month_schedules = Schedule.objects.all()
+    # 달력에 연동된 일정 뜨도록
+    linked_users = request.user.followings.all() # 연동된 사용자들
+    # 현재 사용자와 연동된 사용자들의 ID를 리스트로 저장
+    user_ids = [request.user.id] + list(linked_users.values_list('id', flat=True))
+    month_schedules = Schedule.objects.filter(author_id__in=user_ids).distinct()
 
     context = {
         'year': year,
