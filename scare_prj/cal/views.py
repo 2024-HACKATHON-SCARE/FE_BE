@@ -208,7 +208,7 @@ def update_schedule(request, schedule_id):
         year = date.year
         month = date.month
         day = date.day
-        
+
         return redirect('cal:home2', year=year, month=month, day=day)
 
     # 달력에 연동된 일정 뜨도록
@@ -243,3 +243,15 @@ def update_schedule(request, schedule_id):
     }
 
     return render(request, 'cal/update_schedule.html', {'context': context})
+
+@login_required
+def delete_schedule(request, schedule_id):
+    schedule = get_object_or_404(Schedule, id=schedule_id)
+
+    date = schedule.date
+    year = date.year
+    month = date.month
+    day = date.day
+
+    schedule.delete()
+    return redirect('cal:home2', year=year, month=month, day=day)
