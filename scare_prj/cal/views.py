@@ -1,6 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta, date
 import calendar
+from django.http import HttpResponse
+from .models import *
+from accounts.models import User
 
 def home(request, year=None, month=None):
     if year is None or month is None:
@@ -47,9 +51,12 @@ def home(request, year=None, month=None):
 
     return render(request, 'cal/home.html', context)
 
+@login_required
 def home2(request, year, month, day):
+    """
+    달력
+    """
     selected_day = day
-
     cal = calendar.Calendar(firstweekday=6)
     month_days = cal.monthdayscalendar(year, month) # 이번 달 날짜 주별로 리스트
     
@@ -75,9 +82,15 @@ def home2(request, year, month, day):
 
     # 한국어 요일과 월을 설정
     weekdays = ["월", "화", "수", "목", "금", "토", "일"]
-
     selected_weekday_index = calendar.weekday(year, month, selected_day)
     selected_weekday = weekdays[selected_weekday_index]
+
+    """
+    일정 확인
+    """
+    selected_date = datetime(year = int(year), month = int(month), day = selected_day).date()
+    #print(datetime(year))
+    schedules = Schedule.objects.filter(date=selected_date)
 
     context = {
         'year': year,
@@ -90,6 +103,51 @@ def home2(request, year, month, day):
         'next_year': next_year,
         'next_month': next_month,
         'selected_weekday': selected_weekday,
+        'schedules': schedules,
     }
 
     return render(request, 'cal/home2.html', context)
+
+@login_required
+def add_schedule(request, year, month, day):
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        time_hour = request.POST.get('time_hour')
+        time_minute = request.POST.get('time_minute')
+        am_pm = request.POST.get('am_pm')
+        related_words = request.POST.getlist('related_words')
+        additional_word = request.POST.get('additional_word')
+
+        if additional_word:
+            related_words.append(additional_word)
+        
+        time_str = f"{time_hour}:{time_minute} {am_pm}"
+        time_obj = datetime.strptime(time_str, '%I:%M %p').time()
+
+        related_words_str = ",".join(related_words)
+
+        schedule = Schedule(
+            title=title,
+            date=datetime(year, month, day),
+            time=time_obj,
+            related_words=related_words_str,
+            author = request.user,
+        )
+        schedule.save()
+        
+        return redirect('cal:home2', year=year, month=month, day=day)
+
+    # 시간과 분의 리스트를 생성하여 context에 추가
+    hours = range(1, 13)  # 1부터 12까지
+    minutes = range(0, 60)  # 0부터 59까지
+
+    context = {
+        'year': year,
+        'month': month,
+        'day': day,
+        'title_choices': Schedule.TITLE_CHOICES,
+        'hours': hours,
+        'minutes': minutes,
+    }
+
+    return render(request, 'cal/add_schedule.html', context)

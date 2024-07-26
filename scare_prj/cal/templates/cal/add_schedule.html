@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST">
+        {% csrf_token %}
+        제목: <input type="text" name="title"><br>
+
+        시간:
+        <select name="am_pm">
+            <option value="AM">오전</option>
+            <option value="PM">오후</option>
+        </select>
+        <select name="time_hour">
+            {% for hour in hours %}
+            <option value="{{ hour }}">{{ hour }}</option>
+            {% endfor %}
+        </select>
+        :
+        <select name="time_minute">
+            {% for minute in minutes %}
+            <option value="{{ minute }}">{{ minute }}</option>
+            {% endfor %}
+        </select><br>
+
+        관련 단어:<br>
+        {% for choice in title_choices %}
+            <input type="checkbox" name="related_words" value="{{ choice.0 }}">{{ choice.1 }}<br>
+        {% endfor %}
+        관련 단어 추가:
+        <input type="text" name="additional_word"><br>
+
+        <input type="submit" value="추가하기">
+    </form>
+</body>
+</html>
