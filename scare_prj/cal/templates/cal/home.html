@@ -45,6 +45,19 @@
                                 {% else %}
                                 <a href="{% url 'cal:home2' year month day %}">{{ day }}</a>
                                 {% endif %}
+                            
+                                <!--달력에 일정 보여주기-->
+                                {% for schedule in month_schedules %}
+                                    {% if cls == 'current-month' %}
+                                        {% if schedule.date.year == year %}
+                                            {% if schedule.date.month == month %}
+                                                {% if schedule.date.day == day %}
+                                                    <div>{{ schedule.title }}</div>
+                                                {% endif %}
+                                            {% endif %}                            
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
                             </td>
                         {% endfor %}
                     </tr>

@@ -6,9 +6,11 @@
     <title>Document</title>
 </head>
 <body>
+    <a href="{{request.META.HTTP_REFERER|escape}}">뒤로 가기</a><br>
+    <h1>일정 추가</h1>
     <form method="POST">
         {% csrf_token %}
-        제목: <input type="text" name="title"><br>
+        제목: <input type="text" name="title"><br><br>
 
         시간:
         <select name="am_pm">
@@ -25,7 +27,7 @@
             {% for minute in minutes %}
             <option value="{{ minute }}">{{ minute }}</option>
             {% endfor %}
-        </select><br>
+        </select><br><br>
 
         관련 단어:<br>
         <!-- 기존 저장된 키워드 출력 -->
@@ -34,9 +36,9 @@
         {% endfor %}
 
 <label>관련 단어 추가:</label>
-<input type="text" name="additional_word"><br>
+<input type="text" name="additional_word"><br><br>
 
-        <input type="submit" value="추가하기">
+        <input type="submit" value="완료">
     </form>
 </body>
 </html>

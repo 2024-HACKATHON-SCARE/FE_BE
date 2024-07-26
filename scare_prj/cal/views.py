@@ -38,6 +38,8 @@ def home(request, year=None, month=None):
     # 한국어 요일과 월을 설정
     weekdays = ["일", "월", "화", "수", "목", "금", "토"]
     
+    month_schedules = Schedule.objects.all()
+
     context = {
         'year': year,
         'month': month,
@@ -47,6 +49,7 @@ def home(request, year=None, month=None):
         'prev_month': prev_month,
         'next_year': next_year,
         'next_month': next_month,
+        'month_schedules': month_schedules,
     }
 
     return render(request, 'cal/home.html', context)
@@ -91,6 +94,8 @@ def home2(request, year, month, day):
     selected_date = datetime(year = int(year), month = int(month), day = selected_day).date()
     schedules = Schedule.objects.filter(date=selected_date)
 
+    month_schedules = Schedule.objects.all()
+
     context = {
         'year': year,
         'month': month,
@@ -103,6 +108,7 @@ def home2(request, year, month, day):
         'next_month': next_month,
         'selected_weekday': selected_weekday,
         'schedules': schedules,
+        'month_schedules': month_schedules,
     }
 
     return render(request, 'cal/home2.html', context)
