@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>로고</h1>
+    프로필 이미지: <img width="100" height="100" src="{{ request.user.image.url }}"><br>
+    이름: {{ request.user.nickname }}<br>
+    이메일 주소: {{ request.user.email }}<br>
+    자녀 or 부모: 
+    {% if request.user.role == "child" %}
+    자녀
+    {% else %}
+    부모
+    {% endif %}<br>
+    <hr>
+    <a href="{% url 'accounts:myinfo_update' %}">내 정보 수정하기</a><br>
+    <a href="{%url 'accounts:gearing' request.user.id %}">연동하기</a><br>
+    <a href="{% url 'accounts:alarm' %}">구독 서비스</a><br>
+    <a href="{% url 'accounts:logout' %}">로그아웃</a><br>
+    <hr>
+    <a href="https://likelion.notion.site/12th-HACKATHON-4cbaf4e34dd1441d9341aa46d197637f"><img src="https://i.ibb.co/wzP1pK9/LIKELION-UNIV-12th-pptx-cover-1.png" alt="LIKELION-UNIV-12th-pptx-cover-1"></a>
+
+    <hr>
+    <!-- nav bar -->
+    <a href="{% url 'cal:home' %}">홈</a>
+    <a href="{% url 'checklist:home' %}">체크리스트</a>
+    <a href ="{%url 'record:home'%}">기록</a>
+    <a href="{% url 'accounts:mypage' %}">마이페이지</a>
+</body>
+</html>
