@@ -6,6 +6,8 @@
     <title>Document</title>
 </head>
 <body>
+    <a href="{{request.META.HTTP_REFERER|escape}}">뒤로 가기</a><br>
+    
     <h1>체크리스트 항목 추가</h1>
     <form method="post">
         {% csrf_token %}

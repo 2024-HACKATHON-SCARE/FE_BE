@@ -5,6 +5,7 @@
     <title>일정 수정</title>
 </head>
 <body>
+    <a href="{{request.META.HTTP_REFERER|escape}}">뒤로 가기</a><br>
     <h1>일정 수정</h1>
     <form method="POST">
         {% csrf_token %}
@@ -20,17 +21,21 @@
             <option value="{{ hour }}" {% if hour == context.selected_hour %}selected{% endif %}>{{ hour }}</option>
             {% endfor %}
         </select>
-        :
+        시
         <select name="time_minute">
             {% for minute in context.minutes %}
             <option value="{{ minute }}" {% if minute == context.selected_minute %}selected{% endif %}>{{ minute }}</option>
             {% endfor %}
-        </select><br><br>
-
+        </select>
+        분<br><br>
+        
         관련 단어:<br>
         {% for keyword in context.existing_keywords %}
         <input type="checkbox" name="related_words" value="{{ keyword }}" {% if keyword in context.schedule.related_words %}checked{% endif %}>{{ keyword }}<br>
         {% endfor %}
+
+        <label>관련 단어 추가:</label>
+        <input type="text" name="additional_word"><br><br>
 
         <input type="submit" value="완료">
     </form>

@@ -10,4 +10,8 @@ urlpatterns = [
     path('add_schedule/<int:year>/<int:month>/<int:day>/', add_schedule, name='add_schedule'),
     path('update_schedule/<int:schedule_id>/', update_schedule, name="update_schedule"),
     path('delete_schedule/<int:schedule_id>/', delete_schedule, name="delete_schedule"),
+
+    # 검색
+    path('search/', search, name="search"),
+    path('result/', result, name="result"),
 ]

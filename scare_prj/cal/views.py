@@ -5,6 +5,10 @@ import calendar
 from django.http import HttpResponse
 from .models import *
 from accounts.models import User
+from collections import defaultdict
+
+def format_time(time):
+    return time.strftime("%p %I시 %M분").replace("AM", "오전").replace("PM", "오후")
 
 def home(request, year=None, month=None):
     if year is None or month is None:
@@ -104,6 +108,15 @@ def home2(request, year, month, day):
     schedules = Schedule.objects.filter(date=selected_date, author_id__in=user_ids).distinct()
 
     month_schedules = Schedule.objects.filter(author_id__in=user_ids).distinct()
+
+    # 일정 시간 포맷 변경
+    
+    for schedule in schedules:
+        schedule.formatted_time = format_time(schedule.time)
+    
+
+    for schedule in month_schedules:
+        schedule.formatted_time = format_time(schedule.time)
 
     context = {
         'year': year,
@@ -255,3 +268,27 @@ def delete_schedule(request, schedule_id):
 
     schedule.delete()
     return redirect('cal:home2', year=year, month=month, day=day)
+
+def search(request):
+    return render(request, 'cal/search.html')
+
+def result(request):
+    # 연동
+    linked_users = request.user.followings.all()
+    user_ids = [request.user.id] + list(linked_users.values_list('id', flat=True))
+    schedules = Schedule.objects.filter(author_id__in=user_ids).distinct()
+
+    for schedule in schedules:
+        schedule.formatted_time = format_time(schedule.time)
+
+    entered_text = request.GET['data']
+    matchings = defaultdict(list)
+
+    # 검색 및 날짜별 그룹화
+    for schedule in schedules:
+        if entered_text in schedule.title or entered_text in schedule.related_words:
+            matchings[schedule.date].append(schedule)
+
+    matchings = dict(matchings)
+    
+    return render(request, 'cal/result.html', {'matchings': matchings, 'entered_text': entered_text})
