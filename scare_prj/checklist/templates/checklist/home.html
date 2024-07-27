@@ -78,5 +78,12 @@
         {% endfor %}
     </ul>
     <a href="{% url 'checklist:create' %}">추가</a>
+    
+    <hr>
+    <!-- nav bar -->
+    <a href="{% url 'cal:home' %}">홈</a>
+    <a href="{% url 'checklist:home' %}">체크리스트</a>
+    <a href="{% url 'record:home' %}">기록</a>
+    <a href="{% url 'accounts:mypage' %}">마이페이지</a>
 </body>
 </html>

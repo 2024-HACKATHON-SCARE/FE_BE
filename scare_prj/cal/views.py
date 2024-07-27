@@ -255,3 +255,6 @@ def delete_schedule(request, schedule_id):
 
     schedule.delete()
     return redirect('cal:home2', year=year, month=month, day=day)
+
+def search(request):
+    return render()
