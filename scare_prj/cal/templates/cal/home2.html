@@ -8,6 +8,9 @@
 <body>
     <h1>로고</h1>
     <hr>
+    <a href="{%url 'checklist:notification'%}">알림</a><br>
+    <a href="{% url 'cal:search' %}">검색</a><br>
+
     <!-- 달력 -->
     <a href="{% url 'cal:home_with_date' prev_year prev_month %}">&lt;</a>
     {{ year }}년 {{ month }}월
@@ -88,9 +91,9 @@
     {{ selected_day }}일 {{ selected_weekday }}요일<br>
     
     {% for schedule in schedules %}
-        <a href="{% url 'cal:update_schedule' schedule.id %}">{{ schedule.title }}</a><br>
-        {{ schedule.time }}<br>
-        {{ schedule.related_words }}<br><br>
+        <a href="{% url 'cal:update_schedule' schedule.id %}">{{ schedule.title }}<br>
+        {{ schedule.formatted_time }}<br>
+        {{ schedule.related_words }}</a><br><br>
     {% empty %}
     일정 없음<br><br>
     {% endfor %}
@@ -99,8 +102,8 @@
 
     <!-- nav bar -->
     <a href="{% url 'cal:home' %}">홈</a>
-    체크리스트
-    기록
+    <a href="{% url 'checklist:home' %}">체크리스트</a>
+    <a href="{% url 'record:home' %}">기록</a>
     <a href="{% url 'accounts:mypage' %}">마이페이지</a>
     <br>
 </body>

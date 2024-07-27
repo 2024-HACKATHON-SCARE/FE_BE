@@ -22,12 +22,13 @@
             <option value="{{ hour }}">{{ hour }}</option>
             {% endfor %}
         </select>
-        :
+        시
         <select name="time_minute">
             {% for minute in minutes %}
             <option value="{{ minute }}">{{ minute }}</option>
             {% endfor %}
-        </select><br><br>
+        </select>
+        분<br><br>
 
         관련 단어:<br>
         {% for keyword in existing_keywords %}
