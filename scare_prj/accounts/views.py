@@ -38,7 +38,7 @@ def login_view(request):
     if form.is_valid():
         login(request, form.user_cache)
         return redirect('cal:home')
-    return render(request, 'accounts/login.html', {'form' : form})
+    return render(request, 'accounts/login.html', {'form' : form, 'login_failed': True})
 
 # 로그아웃
 def logout_view(request):
