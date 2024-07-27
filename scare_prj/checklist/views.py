@@ -6,6 +6,8 @@ from django.utils import timezone
 from django.http import JsonResponse
 import json
 import datetime
+from accounts.models import *
+from datetime import timedelta, datetime
 
 # Create your views here.
 def checklist(request):
@@ -53,7 +55,6 @@ def update_status(request, todo_id):
             return JsonResponse({'success': False, 'error': 'Invalid JSON'}, status=400)
     return JsonResponse({'success': False}, status=400)
 
-
 @login_required
 def create(request):
     if request.method == 'POST':
@@ -62,12 +63,11 @@ def create(request):
             todo = form.save(commit=False)
             todo.author = request.user
             todo.save()
-            form.save_m2m()  # many-to-many 필드 저장
+            form.save_m2m()  
 
             # 반복 요일 설정이 있을 경우 반복 생성
             repeat_days = form.cleaned_data['repeat_on']
             if repeat_days:
-                # 현재 날짜로부터 반복 시작
                 start_date = todo.due_date
                 if not start_date:
                     start_date = timezone.now().date()
@@ -100,11 +100,14 @@ def create(request):
                                 new_todo.repeat_on.set(repeat_days)  # 원래의 repeat_on 필드를 복사
                     
                     current_date += datetime.timedelta(days=1)
+
+
             return redirect('checklist:home')
     else:
         form = TodoForm()
 
     return render(request, 'checklist/create.html', {'form': form})
+
 
 @login_required
 def detail(request,id):
@@ -152,6 +155,23 @@ def notification_list(request):
     new_notifications = []
     past_notifications = []
     current_date = timezone.now().date()
+    current_time = timezone.now().time()
+
+    todos = Todo.objects.filter(author=user, completed=False)
+
+    for todo in todos:
+        if todo.due_time:
+            for reminder_time in [5, 10, 15, 30]:  # 분 단위로 설정된 알림 시간
+                reminder_duration = timedelta(minutes=reminder_time)
+                reminder_time_threshold = (datetime.combine(current_date, todo.due_time) + reminder_duration).time()
+                
+                if current_time >= reminder_time_threshold:
+                    # 알림 메시지 생성
+                    message = f"'{todo.title}'의 예정 시간이 {reminder_time}분 지났어요."
+                    notification, created = Notification.objects.get_or_create(
+                        user=user,
+                        message=message,
+                    )
 
     for notification in notifications:
         days_since_created = (current_date - notification.created_at.date()).days

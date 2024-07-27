@@ -3,19 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>알림 설정</title>
+    <title>체크리스트 알림</title>
     {% load static%}
 </head>
 <body>
     <a href="{%url 'accounts:mypage'%}">뒤로가기</a><br>
-    <audio id="alarmSound" src="{% static 'audio_files/test.mp3' %}" preload="auto"></audio>
 
-    <h2>앱 알람</h2>
-        <button id = "playButton">켜기</button>
-        <button id = "stopButton">끄기</button>
-    <hr>
-
-    <!--구독 서비스-->
     <h2>구독 서비스</h2>
     <h3>▶ 구독 혜택</h3>
     <ul>
@@ -33,18 +26,6 @@
     <h3> ▶ 구독 가격</h3>
     <ul><li><b>월 3,300원(VAT 300원)</b></li></ul>
     <button>구독</button>
-
-    <script>
-        document.getElementById('playButton').addEventListener('click', function() {
-            var audio = document.getElementById('alarmSound');
-            audio.play();
-        });
-
-        document.getElementById('stopButton').addEventListener('click', function() {
-            var audio = document.getElementById('alarmSound');
-            audio.pause();
-            audio.currentTime = 0; // 오디오를 처음으로 재설정
-        });
-    </script>
+    
 </body>
 </html>
