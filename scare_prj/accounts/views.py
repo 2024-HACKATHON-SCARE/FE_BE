@@ -46,10 +46,12 @@ def logout_view(request):
         logout(request)
     return redirect('accounts:index')
 
+@login_required
 # 마이페이지
 def mypage(request):
     return render(request, 'accounts/mypage.html')
 
+@login_required
 # 나의 정보 수정
 def myinfo_update(request):
     info = request.user

@@ -9,7 +9,7 @@ import datetime
 from accounts.models import *
 from datetime import timedelta, datetime
 
-# Create your views here.
+@login_required
 def checklist(request):
     user_role = request.user.role #자녀/부모 구분
     today = timezone.now()
