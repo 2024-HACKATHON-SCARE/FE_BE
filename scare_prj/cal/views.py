@@ -10,6 +10,7 @@ from collections import defaultdict
 def format_time(time):
     return time.strftime("%p %I시 %M분").replace("AM", "오전").replace("PM", "오후")
 
+@login_required
 def home(request, year=None, month=None):
     if year is None or month is None:
         today = datetime.today()
@@ -269,9 +270,11 @@ def delete_schedule(request, schedule_id):
     schedule.delete()
     return redirect('cal:home2', year=year, month=month, day=day)
 
+@login_required
 def search(request):
     return render(request, 'cal/search.html')
 
+@login_required
 def result(request):
     # 연동
     linked_users = request.user.followings.all()
