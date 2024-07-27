@@ -13,4 +13,5 @@ urlpatterns = [
 
     # 검색
     path('search/', search, name="search"),
+    path('result/', result, name="result"),
 ]

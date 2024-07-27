@@ -9,7 +9,8 @@
     <h1>로고</h1>
     <hr>
     <a href="{%url 'checklist:notification'%}">알림</a><br>
-    
+    <a href="{% url 'cal:search' %}">검색</a><br>
+
     <!-- 달력 -->
     <a href="{% url 'cal:home_with_date' prev_year prev_month %}">&lt;</a>
     {{ year }}년 {{ month }}월
@@ -91,7 +92,7 @@
     
     {% for schedule in schedules %}
         <a href="{% url 'cal:update_schedule' schedule.id %}">{{ schedule.title }}<br>
-        {{ schedule.time }}<br>
+        {{ schedule.formatted_time }}<br>
         {{ schedule.related_words }}</a><br><br>
     {% empty %}
     일정 없음<br><br>

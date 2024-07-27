@@ -8,8 +8,9 @@
 <body>
     <h1>로고</h1>
     <hr>
-    <a href="{%url 'checklist:notification'%}">알림</a><br>
-    
+    <a href="{% url 'checklist:notification' %}">알림</a><br>
+    <a href="{% url 'cal:search' %}">검색</a><br>
+
     <!-- 달력 -->
         <a href="{% url 'cal:home_with_date' prev_year prev_month %}">&lt;</a>
         {{ year }}년 {{ month }}월
