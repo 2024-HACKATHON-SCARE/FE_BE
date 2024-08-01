@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Comming Soon</h1>
+    username: {{ request.user.username }}<br>
+    디자인: 
+    {% if request.user.role == "child" %}
+    자녀
+    {% else %}
+    부모
+    {% endif %}<br>
+    
+    <hr>
+    <!-- nav bar -->
+    <a href = "{%url 'cal:home'%}">홈</a>
+    <a href="{% url 'checklist:home' %}">체크리스트</a>
+    <a href ="{%url 'record:home'%}">기록</a>
+    <a href="{% url 'accounts:mypage' %}">마이페이지</a>
+    
+    <a href="{%url 'checklist:notification_list' %}">알림</a>
+</body>
+</html>
