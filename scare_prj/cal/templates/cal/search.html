@@ -1,8 +1,13 @@
+<<<<<<< HEAD
+=======
+{% load static %}
+>>>>>>> 64f06b5e13810d7cb6abbabd367229567f5d8814
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Document</title>
 </head>
 <body>
@@ -13,4 +18,25 @@
         <input type="submit" value="확인" />
     </form>
 </body>
+=======
+    <link rel="stylesheet" href="{% static "css/search.css" %}">
+    <title>Document</title>
+</head>
+<body>
+    <section>
+        <header>
+        <a href="{% url 'cal:home' %}"><img src="{% static "img/back.png"%}"></a>
+    </header>
+
+    <form action="{% url 'cal:result' %}"  class="searchLine">
+        <input name="data" size="25" placeholder="관련 단어 검색"></input>
+        <div>
+            <button type="submit" id="search"></button>
+            <label for="search"><img src="{% static "img/search.png"%}"></label>
+        </div>
+    </form>
+</body>
+    </section>
+    <div class="resultLine"></div>
+>>>>>>> 64f06b5e13810d7cb6abbabd367229567f5d8814
 </html>

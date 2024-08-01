@@ -1,22 +1,42 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-</head>
-<body>
-    <h1>로고</h1>
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static " css/login.css" %}" />
+  <title>효담 - 로그인</title>
+</head>
+
+<body>
+  <header><img src="{% static " img/biglogo.png" %}" /></header>
+
+  <section>
     <form method="post" action="{% url 'accounts:login' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">로그인</button>
+      {% csrf_token %}
+      <input type="text" placeholder="아이디" name="username" id="id_username" />
+      <input type="password" placeholder="비밀번호" name="password" id="id_password" />
+      <div id="loginError">
+        <img src="{% static 'img/error.png'%}" />
+        <div>
+          <p>로그인 할 수 없습니다.</p>
+          <p>아이디 혹은 비밀번호를 다시 확인하여 주십시오.</p>
+        </div>
+      </div>
+      <button type="submit">로그인</button>
     </form>
-    <br>
-    
-    - 계정이 없으신가요? -<br>
+    <div>- 계정이 없으신가요? -</div>
     <a href="{% url 'accounts:signup' %}">계정 생성</a>
-    
+  </section>
+
+  <script>
+    window.onload = function () {
+      {% if login_failed %}
+      document.getElementById('loginError').style.display = 'flex';
+      {% endif %}
+    }
+  </script>
 </body>
+
 </html>

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,12 +11,26 @@
     <hr>
     <a href="{%url 'checklist:notification'%}">알림</a><br>
     <a href="{% url 'cal:search' %}">검색</a><br>
+=======
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>로고</h1>
+    <hr />
+    <a href="{%url 'checklist:notification'%}">알림</a><br />
+    <a href="{% url 'cal:search' %}">검색</a><br />
+>>>>>>> 64f06b5e13810d7cb6abbabd367229567f5d8814
 
     <!-- 달력 -->
     <a href="{% url 'cal:home_with_date' prev_year prev_month %}">&lt;</a>
     {{ year }}년 {{ month }}월
     <a href="{% url 'cal:home_with_date' next_year next_month %}">&gt;</a>
     <table class="month">
+<<<<<<< HEAD
         <thead>
             <tr>
                 <th>일</th>
@@ -99,12 +114,88 @@
     {% endfor %}
     <a href="{% url 'cal:add_schedule' year month selected_day %}">일정 추가</a> 
     <hr>
+=======
+      <thead>
+        <tr>
+          <th>일</th>
+          <th>월</th>
+          <th>화</th>
+          <th>수</th>
+          <th>목</th>
+          <th>금</th>
+          <th>토</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in cal_rows %}
+        <tr>
+          {% for day, cls in row %}
+          <td class="{{ cls }}">
+            {% if cls == 'prev-month' %} {% if month == 1 %}
+            <a href="{% url 'cal:home2' prev_year 12 day %}">{{ day }}</a>
+            {% else %}
+            <a href="{% url 'cal:home2' year prev_month day %}">{{ day }}</a>
+            {% endif %} {% elif cls == 'next-month' %} {% if month == 12 %}
+            <a href="{% url 'cal:home2' next_year 1 day %}">{{ day }}</a>
+            {% else %}
+            <a href="{% url 'cal:home2' year next_month day %}">{{ day }}</a>
+            {% endif %} {% else %}
+            <a href="{% url 'cal:home2' year month day %}">{{ day }}</a>
+            {% endif %}
+
+            <!--달력에 일정 보여주기-->
+            {% for schedule in month_schedules %}
+            <!--이번 달-->
+            {% if cls == 'current-month' %} {% if schedule.date.year == year and schedule.date.month == month and schedule.date.day == day %}
+            <div>{{ schedule.title }}</div>
+            {% endif %}
+            <!--이전 달-->
+            {% if cls == 'prev-month' %} {% if month == 1 %} {% if schedule.date.year == year|add:-1 and schedule.date.month == 12 and schedule.date.day == day
+            %}
+            <div>{{ schedule.title }}</div>
+            {% endif %} {% else %} {% if schedule.date.year == year and schedule.date.month == month|add:-1 and schedule.date.day == day %}
+            <div>{{ schedule.title }}</div>
+            {% endif %} {% endif %}
+            <!--다음 달-->
+            {% if cls == 'next-month' %} {% if month == 12 %} {% if schedule.date.year == year|add:1 and schedule.date.month == 1 and schedule.date.day == day
+            %}
+            <div>{{ schedule.title }}</div>
+            {% endif %} {% else %} {% if schedule.date.year == year and schedule.date.month == month|add:1 and schedule.date.day == day %}
+            <div>{{ schedule.title }}</div>
+            {% endif %} {% endif %} {% endif %} {% endfor %}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <hr />
+    {{ selected_day }}일 {{ selected_weekday }}요일<br />
+
+    {% for schedule in schedules %}
+    <a href="{% url 'cal:update_schedule' schedule.id %}"
+      >{{ schedule.title }}<br />
+      {{ schedule.formatted_time }}<br />
+      {{ schedule.related_words }}</a
+    ><br /><br />
+    {% empty %} 일정 없음<br /><br />
+    {% endfor %}
+    <a href="{% url 'cal:add_schedule' year month selected_day %}">일정 추가</a>
+    <hr />
+>>>>>>> 64f06b5e13810d7cb6abbabd367229567f5d8814
 
     <!-- nav bar -->
     <a href="{% url 'cal:home' %}">홈</a>
     <a href="{% url 'checklist:home' %}">체크리스트</a>
     <a href="{% url 'record:home' %}">기록</a>
     <a href="{% url 'accounts:mypage' %}">마이페이지</a>
+<<<<<<< HEAD
     <br>
 </body>
 </html>
+=======
+    <br />
+  </body>
+</html>
+>>>>>>> 64f06b5e13810d7cb6abbabd367229567f5d8814

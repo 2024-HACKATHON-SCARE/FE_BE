@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,3 +24,43 @@
     {% endif %}
 </body>
 </html>
+=======
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static "css/result1.css" %}">
+    <title>Document</title>
+  </head>
+  <body>
+    {% if matchings %}
+    <header>
+      <a href="{{request.META.HTTP_REFERER|escape}}"><img src="{% static "img/back.png" %}" /></a>
+      <div class="search_content">진료</div>
+    </header>
+
+    <section>
+      {% for date, schedules in matchings.items %}
+      <div class="search_result">
+        <div class="sch_date">{{ date }}</div>
+        {% for schedule in schedules %}
+        <div class="schedule">
+          <div class="sch_img"><img src="{% static "img/blue.png" %}" /></div>
+          <div class="sch_content">
+            <div class="sch_title">{{ schedule.title }}</div>
+            <div class="sch_time">{{ schedule.formatted_time }}</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </section>
+
+    {% else %}
+    <h2>{{ entered_text }}</h2>
+    검색 결과가 없습니다. {% endif %}
+  </body>
+</html>
+>>>>>>> 64f06b5e13810d7cb6abbabd367229567f5d8814

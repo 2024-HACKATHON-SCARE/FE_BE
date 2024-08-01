@@ -1,25 +1,40 @@
+{% load static%}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{%static " css/signup.css"%}" />
+  <title>효담 - 회원가입</title>
 </head>
+
 <body>
-    <h1>로고</h1>
+  <header><img src="{% static " img/biglogo.png"%}"></header>
+
+  <section>
     <form method="post" action="{% url 'accounts:signup' %}">
-        {% csrf_token %}
-        아이디: {{ form.username }}<br>
-        이메일: {{ form.email }}<br>
-        {{ form.password1.label_tag }} {{ form.password1 }}<br>
-        {{ form.password2.label_tag }} {{ form.password2 }}<br>
-        {% for choice in form.role %}
-            <div>
-                {{ choice.tag }}
-                <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
-            </div>
-        {% endfor %}<br>
-        <button type="submit">회원가입</button>
+      {% csrf_token %}
+      <input type="email" name="email" id="id_email" placeholder="이메일" />
+      <input type="id" name="username" id="id_username" placeholder="아이디" />
+      <input type="password" name="password1" id="id_password1" placeholder="비밀번호" />
+      <input type="password" name="password2" id="id_password2" placeholder="비밀번호 확인" />
+      <div id="pwError">
+        <img src="{% static " img/error.png"%}">
+        <div>비밀번호가 일치하지 않습니다.</div>
+      </div>
+
+      <div class="select">
+        <input type="radio" name="role" value="child" id="id_role_0" class="sel" checked />
+        <label for="id_role_0">자녀</label>
+        <input type="radio" name="role" value="parent" id="id_role_1" class="sel" />
+        <label for="id_role_1">부모</label>
+      </div>
+      <button type="submit">회원가입</button>
     </form>
+  </section>
+
+  <script src="{%static " js/signup.js" %}"></script>
 </body>
+
 </html>

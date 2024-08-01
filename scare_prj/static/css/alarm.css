@@ -1,0 +1,107 @@
+@font-face {
+  font-family: "NanumBarunpen";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumBarunpen.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: NanumBarunpen;
+}
+
+button + label:hover {
+  cursor: pointer;
+}
+
+body {
+  width: 355px;
+  height: 779px;
+  padding: 33px 0 0;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-left: 10px;
+}
+
+header img {
+  width: 20px;
+  height: 20px;
+}
+
+.secTitle {
+  font-size: 18px;
+  font-weight: 700;
+
+  width: 345px;
+  height: 35px;
+  background-color: rgba(201, 153, 249, 0.5);
+  border: none;
+  padding-left: 10px;
+
+  display: flex;
+  align-items: center;
+}
+
+section {
+  width: 310px;
+  padding: 5px;
+
+  display: flex;
+  flex-direction: column;
+
+  margin: 16px;
+
+  border: 1px solid black;
+}
+
+section * {
+  margin: 5px 0;
+}
+
+.Ptitle,
+.contitle {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+p {
+  margin-left: 20px;
+
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.content {
+  margin-left: 20px;
+}
+
+button {
+  width: 126px;
+  height: 24px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  background-color: rgba(201, 153, 249, 0.21);
+  border: none;
+  border-radius: 5px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.btnset {
+  display: flex;
+  justify-content: center;
+}

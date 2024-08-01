@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,10 +81,132 @@
     <a href="{% url 'checklist:create' %}">추가</a>
     
     <hr>
+=======
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token }}" />
+    <!-- CSRF 토큰을 메타 태그로 추가 -->
+    <link rel="stylesheet" href="{% static "css/checklist2.css" %}">
+    <title>체크 리스트</title>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        const userRole = "{{ user_role }}"; // JavaScript 변수에 Django 템플릿 변수 할당
+
+        function navigateDate(offset) {
+          const currentDate = new Date("{{ current_date|date:'Y-m-d' }}");
+          currentDate.setDate(currentDate.getDate() + offset);
+          const formattedDate = currentDate.toISOString().split("T")[0];
+          const currentUrl = new URL(window.location.href);
+          currentUrl.searchParams.set("date", formattedDate);
+          window.location.href = currentUrl.toString();
+        }
+
+        document.querySelector('button[data-action="navigate-date-previous"]').addEventListener("click", () => navigateDate(-1));
+        document.querySelector('button[data-action="navigate-date-next"]').addEventListener("click", () => navigateDate(1));
+
+        // 부모 계정일 경우에만 체크박스 이벤트 리스너 추가
+        if (userRole === "parent") {
+          document.querySelectorAll('input[name="completed"]').forEach((checkbox) => {
+            checkbox.addEventListener("change", (event) => {
+              const todoId = event.target.dataset.todoId;
+              const isCompleted = event.target.checked;
+              toggleTodoCompletion(todoId, isCompleted);
+            });
+          });
+        }
+      });
+
+      function toggleTodoCompletion(todoId, isCompleted) {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
+        fetch(`/checklist/${todoId}/update_status/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrfToken,
+          },
+          body: JSON.stringify({ completed: isCompleted }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              console.log("Status updated:", data);
+            } else {
+              console.error("Failed to update status:", data.error || "Unknown error");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <div>
+      <header><img src="{% static "img/logo.png"%}" /></header>
+
+      <section>
+        <!-- 날짜 이동 버튼 -->
+        <div class="dateLine">
+          <button id="yesterday" data-action="navigate-date-previous"></button>
+          <label for="yesterday"> << </label>
+          <div class="date">{{ current_date|date:"Y.m.d l" }}</div>
+          <button id="tomorrow" data-action="navigate-date-next"></button>
+          <label for="tomorrow"> >> </label>
+        </div>
+        <!-- 체크리스트 항목 -->
+
+        <div>
+          <ul>
+            {% for todo in todos %}
+            <li id="todo-{{ todo.id }}" class="list_content">
+              <a href="{% url 'checklist:detail' todo.id %}">
+                <div>
+                  <img src="{% static "img/cal.png"%}" />
+                  <div class="content">{{ todo.title }}</div>
+                </div>
+
+                <div>
+                  <div class="time">{{todo.due_time}}</div>
+                  <!-- prettier-ignore -->
+                  <input 
+                    type="checkbox" 
+                    id="check1" 
+                    class="check" 
+                    name="completed" 
+                    data-todo-id="{{ todo.id }}"
+                    {% if todo.completed %}checked{% endif %}
+                    {% if user_role == 'child' %}disabled{% endif %}
+                    >
+                  <label for="check1"></label>
+                </div>
+              </a>
+            </li>
+            {% empty %}
+            <li>할 일이 없습니다.</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </section>
+    </div>
+    <div class="addCl">
+      <a href="{% url 'checklist:create' %}"> <img src="{% static "img/+.png"%}" class="plus" /></a>
+    </div>
+
+>>>>>>> 64f06b5e13810d7cb6abbabd367229567f5d8814
     <!-- nav bar -->
     <a href="{% url 'cal:home' %}">홈</a>
     <a href="{% url 'checklist:home' %}">체크리스트</a>
     <a href="{% url 'record:home' %}">기록</a>
     <a href="{% url 'accounts:mypage' %}">마이페이지</a>
+<<<<<<< HEAD
 </body>
+=======
+  </body>
+>>>>>>> 64f06b5e13810d7cb6abbabd367229567f5d8814
 </html>
