@@ -1,0 +1,109 @@
+body {
+    width: 375px;
+    height: 812px;
+    margin: 0;
+    margin-top: 33px;
+}
+
+input {
+    font-size: 15px;
+    height: 19px;
+    border: none;
+}
+
+.content {
+    margin: 19px 0 0 31px;
+}
+
+.title {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    border-bottom: 1px solid black;
+    padding-bottom: 12px;
+}
+
+.title img {
+    position: relative;
+    left: 22.22px;
+}
+
+.title h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    width: 100%;
+    text-align: center;
+}
+
+.subtitle {
+    font-size: 15px;
+    font-weight: bold;
+    margin: 0;
+    margin-right: 9px;
+}
+
+.subtitle input {
+    border: 1px solid rgb(0, 0, 0, 0.5);
+    border-radius: 5px;
+}
+
+.checklist_title {
+    width: 300px;
+    height: 20px;
+    border: 1px solid black;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.date_div, .time_div {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.date_div {
+    margin-bottom: 30px;
+    margin-top: 23px;
+}
+
+.time_div {
+    margin-bottom: 23px;
+}
+
+
+.repeat {
+    display: flex;
+    flex-direction: column;
+}
+
+.repeat div {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.repeat input {
+    width: 20px;
+    height: 20px;
+}
+
+.repeat label {
+    margin-left: 14px;
+}
+
+.repeat .subtitle {
+    margin-bottom: 14px;
+}
+
+.submit_btn {
+    border: 1px solid rgb(0, 0, 0, 0.3);
+    font-size: 18px;
+    font-weight: bold;
+    background-color: white;
+    border-radius: 5px;
+    padding: 6px 21px;
+    margin-top: 238px;
+    margin-left: 257px;
+}
