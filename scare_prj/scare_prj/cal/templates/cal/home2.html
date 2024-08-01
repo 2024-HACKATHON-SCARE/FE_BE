@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="{% url 'cal:home' %}">홈</a><br>
+    <h1>{{ year }}년 {{ month }}월</h1>
+    <table class="month">
+        <!--
+        <thead>
+            <tr>
+                <th colspan="7">{{ year }}년 {{ month }}월</th>
+            </tr>
+        </thead>-->
+        <tbody>
+            <tr>
+                <th>일</th>
+                <th>월</th>
+                <th>화</th>
+                <th>수</th>
+                <th>목</th>
+                <th>금</th>
+                <th>토</th>
+            </tr>
+            {% for row in cal_rows %}
+                <tr>
+                    {% for day in row %}
+                        {% if day == 0 %}
+                            <td>??</td>
+                        {% else %}
+                            <td>{{ day }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

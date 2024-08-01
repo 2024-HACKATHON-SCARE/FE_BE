@@ -1,0 +1,99 @@
+@font-face {
+  font-family: "NanumBarunpen";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumBarunpen.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+body {
+  width: 375px;
+  height: 812px;
+  background-color: rgba(217, 217, 217, 0.2);
+  margin: 0;
+  border: 1px solid black;
+}
+
+header div {
+  display: flex;
+  flex-direction: row;
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  justify-content: space-between;
+  background-color: white;
+  height: 74px;
+  padding: 20px;
+}
+
+.search_content {
+  font-family: NanumBarunpen;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 0;
+  margin-left: 10px;
+}
+
+header img {
+  width: 20px;
+  height: 20px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.search_result {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.sch_date {
+  font-family: NanumBarunpen;
+  font-size: 8px;
+  font-weight: 400;
+  margin: 10px 15px 5px;
+}
+
+.schedule {
+  width: 355px;
+  height: 50px;
+  background-color: white;
+  border-radius: 8px;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.sch_img {
+  width: 4px;
+  height: 37px;
+  margin: 5px;
+}
+
+.sch_content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sch_title {
+  font-family: inter;
+  font-weight: 400;
+  font-size: 12px;
+}
+
+.sch_time {
+  font-family: inter;
+  font-weight: 400;
+  font-size: 10px;
+  color: #000000;
+  opacity: 60%;
+}
